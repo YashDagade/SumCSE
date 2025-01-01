@@ -125,7 +125,7 @@ class ModelArguments:
     )
     
     # =========================
-    # [OCE ADDED] New arguments for OCE
+    # [OCE ADDED] Orthogonality arguments
     # =========================
     ortho_loss_lambda: float = field(
         default=0.0,
@@ -143,7 +143,6 @@ class DataTrainingArguments:
     Arguments pertaining to what data we are going to input our model for training and eval.
     """
 
-    # Huggingface's original arguments. 
     dataset_name: Optional[str] = field(
         default=None, metadata={"help": "The name of the dataset to use (via the datasets library)."}
     )
@@ -164,7 +163,6 @@ class DataTrainingArguments:
         metadata={"help": "The number of processes to use for the preprocessing."},
     )
 
-    # SimCSE's arguments
     train_file: Optional[str] = field(
         default=None, 
         metadata={"help": "The training data file (.txt or .csv)."}
@@ -180,7 +178,7 @@ class DataTrainingArguments:
         default=False,
         metadata={
             "help": "Whether to pad all samples to `max_seq_length`. "
-            "If False, will pad the samples dynamically when batching to the maximum length in the batch."
+            "If False, will pad the samples dynamically when batching."
         },
     )
     mlm_probability: float = field(
@@ -199,10 +197,6 @@ class DataTrainingArguments:
 
 @dataclass
 class OurTrainingArguments(TrainingArguments):
-    # Evaluation
-    ## By default, we evaluate STS (dev) during training (for selecting best checkpoints) and evaluate 
-    ## both STS and transfer tasks (dev) at the end of training. Using --eval_transfer will allow evaluating
-    ## both STS and transfer tasks (dev) during training.
     eval_transfer: bool = field(
         default=False,
         metadata={"help": "Evaluate transfer task dev sets (in validation)."}
@@ -242,10 +236,6 @@ class OurTrainingArguments(TrainingArguments):
 
 
 def main():
-    # See all possible arguments in src/transformers/training_args.py
-    # or by passing the --help flag to this script.
-    # We now keep distinct sets of args, for a cleaner separation of concerns.
-
     parser = HfArgumentParser((ModelArguments, DataTrainingArguments, OurTrainingArguments))
     if len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
         model_args, data_args, training_args = parser.parse_json_file(json_file=os.path.abspath(sys.argv[1]))
@@ -263,7 +253,6 @@ def main():
             "Use --overwrite_output_dir to overcome."
         )
 
-    # Setup logging
     logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
         datefmt="%m/%d/%Y %H:%M:%S",
@@ -324,7 +313,6 @@ def main():
     else:
         raise ValueError(
             "You are instantiating a new tokenizer from scratch. This is not supported by this script."
-            "You can do it from another script, save it, and load it from here, using --tokenizer_name."
         )
 
     if model_args.model_name_or_path:
@@ -378,7 +366,7 @@ def main():
         sent2_cname = column_names[3]
 
     def prepare_features(examples):
-        SUP=True
+        SUP = True
         total = len(examples[sent0_cname])
         for idx in range(total):
             if examples[sent0_cname][idx] is None:
@@ -401,10 +389,19 @@ def main():
         features = {}
         if sent2_cname is not None and SUP:
             for key in sent_features:
-                features[key] = [[sent_features[key][i], sent_features[key][i+total], sent_features[key][i+total*2]] for i in range(total)]
+                features[key] = [
+                    [sent_features[key][i],
+                     sent_features[key][i + total],
+                     sent_features[key][i + total * 2]]
+                    for i in range(total)
+                ]
         else:
             for key in sent_features:
-                features[key] = [[sent_features[key][i], sent_features[key][i+total]] for i in range(total)]
+                features[key] = [
+                    [sent_features[key][i],
+                     sent_features[key][i + total]]
+                    for i in range(total)
+                ]
         return features
 
     if training_args.do_train:
@@ -435,7 +432,10 @@ def main():
             flat_features = []
             for feature in features:
                 for i in range(num_sent):
-                    flat_features.append({k: feature[k][i] if k in special_keys else feature[k] for k in feature})
+                    flat_features.append({
+                        k: feature[k][i] if k in special_keys else feature[k]
+                        for k in feature
+                    })
 
             batch = self.tokenizer.pad(
                 flat_features,
@@ -447,7 +447,10 @@ def main():
             if model_args.do_mlm:
                 batch["mlm_input_ids"], batch["mlm_labels"] = self.mask_tokens(batch["input_ids"])
 
-            batch = {k: batch[k].view(bs, num_sent, -1) if k in special_keys else batch[k].view(bs, num_sent, -1)[:, 0] for k in batch}
+            batch = {
+                k: batch[k].view(bs, num_sent, -1) if k in special_keys else batch[k].view(bs, num_sent, -1)[:, 0]
+                for k in batch
+            }
 
             if "label" in batch:
                 batch["labels"] = batch["label"]
@@ -455,7 +458,6 @@ def main():
             if "label_ids" in batch:
                 batch["labels"] = batch["label_ids"]
                 del batch["label_ids"]
-
             return batch
         
         def mask_tokens(
@@ -466,7 +468,8 @@ def main():
             probability_matrix = torch.full(labels.shape, self.mlm_probability)
             if special_tokens_mask is None:
                 special_tokens_mask = [
-                    self.tokenizer.get_special_tokens_mask(val, already_has_special_tokens=True) for val in labels.tolist()
+                    self.tokenizer.get_special_tokens_mask(val, already_has_special_tokens=True)
+                    for val in labels.tolist()
                 ]
                 special_tokens_mask = torch.tensor(special_tokens_mask, dtype=torch.bool)
             else:
@@ -512,7 +515,6 @@ def main():
                 for key, value in sorted(train_result.metrics.items()):
                     logger.info(f"  {key} = {value}")
                     writer.write(f"{key} = {value}\n")
-
             trainer.state.save_to_json(os.path.join(training_args.output_dir, "trainer_state.json"))
 
     results = {}
