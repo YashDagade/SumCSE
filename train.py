@@ -123,6 +123,18 @@ class ModelArguments:
             "help": "Use MLP only during training"
         }
     )
+    
+    # =========================
+    # [OCE ADDED] New arguments for OCE
+    # =========================
+    ortho_loss_lambda: float = field(
+        default=0.0,
+        metadata={"help": "Weight for the orthogonality loss term. Set > 0 to enable OCE."}
+    )
+    ortho_margin: float = field(
+        default=0.1,
+        metadata={"help": "Margin threshold for orthogonality. 0 < margin < 1."}
+    )
 
 
 @dataclass
@@ -208,31 +220,15 @@ class OurTrainingArguments(TrainingArguments):
             device = xm.xla_device()
             self._n_gpu = 0
         elif self.local_rank == -1:
-            # if n_gpu is > 1 we'll use nn.DataParallel.
-            # If you only want to use a specific subset of GPUs use `CUDA_VISIBLE_DEVICES=0`
-            # Explicitly set CUDA to the first (index 0) CUDA device, otherwise `set_device` will
-            # trigger an error that a device index is missing. Index 0 takes into account the
-            # GPUs available in the environment, so `CUDA_VISIBLE_DEVICES=1,2` with `cuda:0`
-            # will use the first GPU in that env, i.e. GPU#1
             device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-            # Sometimes the line in the postinit has not been run before we end up here, so just checking we're not at
-            # the default value.
             self._n_gpu = torch.cuda.device_count()
         else:
-            # Here, we'll use torch.distributed.
-            # Initializes the distributed backend which will take care of synchronizing nodes/GPUs
-            #
-            # deepspeed performs its own DDP internally, and requires the program to be started with:
-            # deepspeed  ./program.py
-            # rather than:
-            # python -m torch.distributed.launch --nproc_per_node=2 ./program.py
             if self.deepspeed:
                 from .integrations import is_deepspeed_available
 
                 if not is_deepspeed_available():
                     raise ImportError("--deepspeed requires deepspeed: `pip install deepspeed`.")
                 import deepspeed
-
                 deepspeed.init_distributed()
             else:
                 torch.distributed.init_process_group(backend="nccl")
@@ -252,8 +248,6 @@ def main():
 
     parser = HfArgumentParser((ModelArguments, DataTrainingArguments, OurTrainingArguments))
     if len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
-        # If we pass only one argument to the script and it's the path to a json file,
-        # let's parse it to get our arguments.
         model_args, data_args, training_args = parser.parse_json_file(json_file=os.path.abspath(sys.argv[1]))
     else:
         model_args, data_args, training_args = parser.parse_args_into_dataclasses()
@@ -276,32 +270,19 @@ def main():
         level=logging.INFO if is_main_process(training_args.local_rank) else logging.WARN,
     )
 
-    # Log on each process the small summary:
     logger.warning(
         f"Process rank: {training_args.local_rank}, device: {training_args.device}, n_gpu: {training_args.n_gpu}"
         + f" distributed training: {bool(training_args.local_rank != -1)}, 16-bits training: {training_args.fp16}"
     )
-    # Set the verbosity to info of the Transformers logger (on main process only):
     if is_main_process(training_args.local_rank):
         transformers.utils.logging.set_verbosity_info()
         transformers.utils.logging.enable_default_handler()
         transformers.utils.logging.enable_explicit_format()
     logger.info("Training/evaluation parameters %s", training_args)
 
-    # Set seed before initializing model.
     set_seed(training_args.seed)
 
-    # Get the datasets: you can either provide your own CSV/JSON/TXT training and evaluation files (see below)
-    # or just provide the name of one of the public datasets available on the hub at https://huggingface.co/datasets/
-    # (the dataset will be downloaded automatically from the datasets Hub
-    #
-    # For CSV/JSON files, this script will use the column called 'text' or the first column. You can easily tweak this
-    # behavior (see below)
-    #
-    # In distributed training, the load_dataset function guarantee that only one local process can concurrently
-    # download the dataset.
     data_files = {}
-
     if data_args.train_file is not None:
         data_files["train"] = data_args.train_file
     extension = data_args.train_file.split(".")[-1]
@@ -316,14 +297,7 @@ def main():
         datasets = load_dataset(data_args.train_file, cache_dir=f"../DATA/cache/{dataset_cache_prefix}")
 
     datasets = datasets.shuffle(seed=42)
-    #datasets['train'] = datasets["train"].select(range(275497))
-    # See more about loading any type of standard or custom dataset (from files, python dict, pandas DataFrame, etc) at
-    # https://huggingface.co/docs/datasets/loading_datasets.html.
 
-    # Load pretrained model and tokenizer
-    # Distributed training:
-    # The .from_pretrained methods guarantee that only one local process can concurrently
-    # download model & vocab.
     config_kwargs = {
         "cache_dir": model_args.cache_dir,
         "revision": model_args.model_revision,
@@ -362,7 +336,7 @@ def main():
                 cache_dir=model_args.cache_dir,
                 revision=model_args.model_revision,
                 use_auth_token=True if model_args.use_auth_token else None,
-                model_args=model_args                  
+                model_args=model_args
             )
         elif 'bert' in model_args.model_name_or_path:
             model = BertForCL.from_pretrained(
@@ -386,44 +360,32 @@ def main():
 
     model.resize_token_embeddings(len(tokenizer))
 
-    # Prepare features
     column_names = datasets["train"].column_names
     sent2_cname = None
     if len(column_names) == 2:
-        # Pair datasets
         sent0_cname = column_names[0]
         sent1_cname = column_names[1]
     elif len(column_names) == 3:
-        # Pair datasets with hard negatives
         sent0_cname = column_names[0]
         sent1_cname = column_names[1]
         sent2_cname = column_names[2]
     elif len(column_names) == 1:
-        # Unsupervised datasets
         sent0_cname = column_names[0]
         sent1_cname = column_names[0]
     else:
         sent0_cname = column_names[0]
         sent1_cname = column_names[1]
         sent2_cname = column_names[3]
+
     def prepare_features(examples):
-        # padding = longest (default)
-        #   If no sentence in the batch exceed the max length, then use
-        #   the max sentence length in the batch, otherwise use the 
-        #   max sentence length in the argument and truncate those that
-        #   exceed the max length.
-        # padding = max_length (when pad_to_max_length, for pressure test)
-        #   All sentences are padded/truncated to data_args.max_seq_length.
         SUP=True
         total = len(examples[sent0_cname])
-        # Avoid "None" fields 
         for idx in range(total):
             if examples[sent0_cname][idx] is None:
                 examples[sent0_cname][idx] = " "
             if examples[sent1_cname][idx] is None:
                 examples[sent1_cname][idx] = " "
         sentences = examples[sent0_cname] + examples[sent1_cname]
-        # If hard negative exists
         if sent2_cname is not None and SUP:
             for idx in range(total):
                 if examples[sent2_cname][idx] is None:
@@ -443,7 +405,6 @@ def main():
         else:
             for key in sent_features:
                 features[key] = [[sent_features[key][i], sent_features[key][i+total]] for i in range(total)]
-            
         return features
 
     if training_args.do_train:
@@ -455,10 +416,8 @@ def main():
             load_from_cache_file=not data_args.overwrite_cache,
         )
 
-    # Data collator
     @dataclass
     class OurDataCollatorWithPadding:
-
         tokenizer: PreTrainedTokenizerBase
         padding: Union[bool, str, PaddingStrategy] = True
         max_length: Optional[int] = None
@@ -502,12 +461,8 @@ def main():
         def mask_tokens(
             self, inputs: torch.Tensor, special_tokens_mask: Optional[torch.Tensor] = None
         ) -> Tuple[torch.Tensor, torch.Tensor]:
-            """
-            Prepare masked tokens inputs/labels for masked language modeling: 80% MASK, 10% random, 10% original.
-            """
             inputs = inputs.clone()
             labels = inputs.clone()
-            # We sample a few tokens in each sequence for MLM training (with probability `self.mlm_probability`)
             probability_matrix = torch.full(labels.shape, self.mlm_probability)
             if special_tokens_mask is None:
                 special_tokens_mask = [
@@ -519,18 +474,15 @@ def main():
 
             probability_matrix.masked_fill_(special_tokens_mask, value=0.0)
             masked_indices = torch.bernoulli(probability_matrix).bool()
-            labels[~masked_indices] = -100  # We only compute loss on masked tokens
+            labels[~masked_indices] = -100
 
-            # 80% of the time, we replace masked input tokens with tokenizer.mask_token ([MASK])
             indices_replaced = torch.bernoulli(torch.full(labels.shape, 0.8)).bool() & masked_indices
             inputs[indices_replaced] = self.tokenizer.convert_tokens_to_ids(self.tokenizer.mask_token)
 
-            # 10% of the time, we replace masked input tokens with random word
             indices_random = torch.bernoulli(torch.full(labels.shape, 0.5)).bool() & masked_indices & ~indices_replaced
             random_words = torch.randint(len(self.tokenizer), labels.shape, dtype=torch.long)
             inputs[indices_random] = random_words[indices_random]
 
-            # The rest of the time (10% of the time) we keep the masked input tokens unchanged
             return inputs, labels
 
     data_collator = default_data_collator if data_args.pad_to_max_length else OurDataCollatorWithPadding(tokenizer)
@@ -544,7 +496,6 @@ def main():
     )
     trainer.model_args = model_args
 
-    # Training
     if training_args.do_train:
         model_path = (
             model_args.model_name_or_path
@@ -552,7 +503,7 @@ def main():
             else None
         )
         train_result = trainer.train(model_path=model_path)
-        trainer.save_model()  # Saves the tokenizer too for easy upload
+        trainer.save_model()
 
         output_train_file = os.path.join(training_args.output_dir, "train_results.txt")
         if trainer.is_world_process_zero():
@@ -562,10 +513,8 @@ def main():
                     logger.info(f"  {key} = {value}")
                     writer.write(f"{key} = {value}\n")
 
-            # Need to save the state, since Trainer.save_model saves only the tokenizer with the model
             trainer.state.save_to_json(os.path.join(training_args.output_dir, "trainer_state.json"))
 
-    # Evaluation
     results = {}
     if training_args.do_eval:
         logger.info("*** Evaluate ***")
@@ -582,7 +531,6 @@ def main():
     return results
 
 def _mp_fn(index):
-    # For xla_spawn (TPUs)
     main()
 
 

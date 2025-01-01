@@ -96,6 +96,38 @@ def cl_init(cls, config):
     cls.sim = Similarity(temp=cls.model_args.temp)
     cls.init_weights()
 
+# =========================
+# [OCE ADDED] Utility function for orthogonality loss
+# =========================
+def compute_orthogonality_loss(embeddings: torch.Tensor, margin: float) -> torch.Tensor:
+    """
+    Compute a batch-wise orthogonality penalty:
+    L_ortho = 1/(b*(b-1)) * sum_{i != j} max(0, |cos(e_i, e_j)| - margin)
+
+    embeddings: (B, D) tensor
+    margin: threshold for the absolute cosine value
+    """
+    device = embeddings.device
+    b = embeddings.size(0)
+
+    # Cosine similarity matrix: shape (b, b)
+    cos_sims = F.cosine_similarity(
+        embeddings.unsqueeze(1), 
+        embeddings.unsqueeze(0),
+        dim=2
+    )
+
+    abs_cos_sims = cos_sims.abs()
+
+    # Mask diagonal (i==j)
+    mask = torch.eye(b, device=device).bool()
+    abs_cos_sims = abs_cos_sims.masked_fill_(mask, 0.0)
+
+    # Penalty = relu(|cos| - margin)
+    penalty = F.relu(abs_cos_sims - margin)
+    L_ortho = penalty.sum() / (b * (b - 1))
+    return L_ortho
+
 def cl_forward(cls,
     encoder,
     input_ids=None,
@@ -122,7 +154,7 @@ def cl_forward(cls,
     mlm_outputs = None
     # Flatten input for encoding
     input_ids = input_ids.view((-1, input_ids.size(-1))) # (bs * num_sent, len)
-    attention_mask = attention_mask.view((-1, attention_mask.size(-1))) # (bs * num_sent len)
+    attention_mask = attention_mask.view((-1, attention_mask.size(-1))) # (bs * num_sent, len)
     if token_type_ids is not None:
         token_type_ids = token_type_ids.view((-1, token_type_ids.size(-1))) # (bs * num_sent, len)
 
@@ -196,7 +228,6 @@ def cl_forward(cls,
 
     cos_sim = cls.sim(z1.unsqueeze(1), z2.unsqueeze(0))
     # Hard negative
-
     if num_sent >= 3:
         z1_z3_cos = cls.sim(z1.unsqueeze(1), z3.unsqueeze(0))
         cos_sim = torch.cat([cos_sim, z1_z3_cos], 1)
@@ -214,6 +245,22 @@ def cl_forward(cls,
         cos_sim = cos_sim + weights
 
     loss = loss_fct(cos_sim, labels)
+
+    # =========================================
+    # [OCE ADDED] Orthogonality Loss
+    # =========================================
+    if cls.model_args.ortho_loss_lambda > 0.0:
+        # Collect all embeddings if num_sent=2 or 3
+        if num_sent == 2:
+            all_z = torch.cat([z1, z2], dim=0) 
+        elif num_sent == 3:
+            all_z = torch.cat([z1, z2, z3], dim=0)
+        else:
+            all_z = pooler_output.view(-1, pooler_output.size(-1))
+
+        ortho_penalty = compute_orthogonality_loss(all_z, margin=cls.model_args.ortho_margin)
+        loss = loss + cls.model_args.ortho_loss_lambda * ortho_penalty
+    # =========================================
 
     # Calculate loss for MLM
     if mlm_outputs is not None and mlm_labels is not None:
