@@ -96,19 +96,30 @@ logger = logging.get_logger(__name__)
 import random
 import string
 import torch.nn.functional as F
+import nltk
+from nltk.corpus import brown
 
+nltk.download('brown')
 
-def _generate_cached_random_sentences(n=100) -> List[str]:
-    """
-    Generate 'n' random sentences. This is a placeholder that you can
-    replace with more meaningful text if desired.
-    """
-    random_sentences = []
-    for _ in range(n):
-        length = random.randint(5, 15)
-        words = [f"token{random.randint(1,999)}" for __ in range(length)]
-        random_sentences.append(" ".join(words))
-    return random_sentences
+def _generate_cached_random_sentences(n=100, min_length=5, max_length=30) -> List[str]:
+
+    
+    sentences = []
+    for sentence in brown.sents():
+        sentence_str = ' '.join(sentence).strip()
+        if not sentence_str.endswith(('.', '!', '?')):
+            continue
+        if '...' in sentence_str or sentence_str.endswith(',') or sentence_str.endswith(';'):
+            continue
+        word_count = len(sentence)
+        if word_count < min_length or word_count > max_length:
+            continue
+        sentences.append(sentence_str)
+        if len(sentences) >= n:
+            break
+
+    return sentences
+
 
 def _compute_mean_var_angle(embeddings: np.ndarray) -> Tuple[float, float]:
     """

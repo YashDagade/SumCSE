@@ -1,0 +1,6 @@
+scripts/results_new
+results_new
+SentEval
+__pycache__/
+*.py[cod]
+.DS_Store
