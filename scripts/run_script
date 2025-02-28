@@ -1,0 +1,28 @@
+#!/bin/bash
+#SBATCH --job-name=SumCSE_Train       # Job name
+#SBATCH --output=%x_%j.out            # Output file
+#SBATCH --error=%x_%j.err             # Error file
+#SBATCH --partition=compsci-gpu       # Partition
+#SBATCH --gres=gpu:a6000:4            # Request 4 A6000 GPUs
+#SBATCH --ntasks=4                    # We want four task
+#SBATCH --mem=130G                    # Memory
+#SBATCH --time=16:00:00              # Time limit
+
+# Load environment
+source activate sumcse
+
+# Change to working directory
+cd /usr/project/xtmp/yd211/Documents/New_Code/SumCSE
+
+# Make sure the script is executable
+chmod +x scripts/simcse_train_test.sh
+
+# Run the training script with all parameters
+./scripts/simcse_train_test.sh --num_gpus 4 \
+  --output_dir ../result/SumCSE/ \
+  --model_name_or_path roberta-large \
+  --learning_rate 1e-5 \
+  --per_device_train_batch_size 128 \
+  --train_file ../Data/SumCSE.csv \
+  --num_train_epochs 3
+

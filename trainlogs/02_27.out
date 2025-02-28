@@ -1,0 +1,301 @@
+/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/distributed/launch.py:180: FutureWarning: The module torch.distributed.launch is deprecated
+and will be removed in future. Use torchrun.
+Note that --use_env is set by default in torchrun.
+If your script expects `--local_rank` argument to be set, please
+change it to read from `os.environ['LOCAL_RANK']` instead. See 
+https://pytorch.org/docs/stable/distributed.html#launch-utility for 
+further instructions
+
+  warnings.warn(
+02/28/2025 13:49:19 - INFO - __main__ -   PyTorch: setting up devices
+02/28/2025 13:49:19 - INFO - __main__ -   PyTorch: setting up devices
+02/28/2025 13:49:19 - INFO - __main__ -   PyTorch: setting up devices
+02/28/2025 13:49:19 - INFO - __main__ -   PyTorch: setting up devices
+02/28/2025 13:49:19 - INFO - torch.distributed.distributed_c10d -   Added key: store_based_barrier_key:1 to store for rank: 3
+02/28/2025 13:49:19 - INFO - torch.distributed.distributed_c10d -   Added key: store_based_barrier_key:1 to store for rank: 0
+02/28/2025 13:49:19 - INFO - torch.distributed.distributed_c10d -   Added key: store_based_barrier_key:1 to store for rank: 1
+02/28/2025 13:49:19 - INFO - torch.distributed.distributed_c10d -   Rank 1: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+02/28/2025 13:49:19 - INFO - torch.distributed.distributed_c10d -   Added key: store_based_barrier_key:1 to store for rank: 2
+02/28/2025 13:49:19 - INFO - torch.distributed.distributed_c10d -   Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+02/28/2025 13:49:19 - INFO - torch.distributed.distributed_c10d -   Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+02/28/2025 13:49:19 - INFO - torch.distributed.distributed_c10d -   Rank 0: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+02/28/2025 13:49:19 - WARNING - __main__ -   Process rank: 0, device: cuda:0, n_gpu: 1 distributed training: True, 16-bits training: True
+02/28/2025 13:49:19 - WARNING - __main__ -   Process rank: 1, device: cuda:1, n_gpu: 1 distributed training: True, 16-bits training: True
+02/28/2025 13:49:19 - INFO - __main__ -   Training/evaluation parameters OurTrainingArguments(output_dir='../result/02_27/', overwrite_output_dir=True, do_train=True, do_eval=True, do_predict=False, evaluation_strategy=<EvaluationStrategy.STEPS: 'steps'>, prediction_loss_only=False, per_device_train_batch_size=128, per_device_eval_batch_size=8, per_gpu_train_batch_size=None, per_gpu_eval_batch_size=None, gradient_accumulation_steps=1, eval_accumulation_steps=None, learning_rate=1e-05, weight_decay=0.0, adam_beta1=0.9, adam_beta2=0.999, adam_epsilon=1e-08, max_grad_norm=1.0, num_train_epochs=3.0, max_steps=-1, lr_scheduler_type=<SchedulerType.LINEAR: 'linear'>, warmup_steps=0, logging_dir='runs/Feb28_13-49-19_compsci-cluster-fitz-07', logging_first_step=False, logging_steps=500, save_steps=500, save_total_limit=None, no_cuda=False, seed=42, fp16=True, fp16_opt_level='O1', fp16_backend='auto', local_rank=1, tpu_num_cores=None, tpu_metrics_debug=False, debug=False, dataloader_drop_last=False, eval_steps=125, dataloader_num_workers=0, past_index=-1, run_name='../result/02_27/', disable_tqdm=False, remove_unused_columns=True, label_names=None, load_best_model_at_end=True, metric_for_best_model='stsb_spearman', greater_is_better=True, ignore_data_skip=False, sharded_ddp=False, deepspeed=None, label_smoothing_factor=0.0, adafactor=False, eval_transfer=False)
+02/28/2025 13:49:19 - INFO - __main__ -   Training/evaluation parameters OurTrainingArguments(output_dir='../result/02_27/', overwrite_output_dir=True, do_train=True, do_eval=True, do_predict=False, evaluation_strategy=<EvaluationStrategy.STEPS: 'steps'>, prediction_loss_only=False, per_device_train_batch_size=128, per_device_eval_batch_size=8, per_gpu_train_batch_size=None, per_gpu_eval_batch_size=None, gradient_accumulation_steps=1, eval_accumulation_steps=None, learning_rate=1e-05, weight_decay=0.0, adam_beta1=0.9, adam_beta2=0.999, adam_epsilon=1e-08, max_grad_norm=1.0, num_train_epochs=3.0, max_steps=-1, lr_scheduler_type=<SchedulerType.LINEAR: 'linear'>, warmup_steps=0, logging_dir='runs/Feb28_13-49-19_compsci-cluster-fitz-07', logging_first_step=False, logging_steps=500, save_steps=500, save_total_limit=None, no_cuda=False, seed=42, fp16=True, fp16_opt_level='O1', fp16_backend='auto', local_rank=0, tpu_num_cores=None, tpu_metrics_debug=False, debug=False, dataloader_drop_last=False, eval_steps=125, dataloader_num_workers=0, past_index=-1, run_name='../result/02_27/', disable_tqdm=False, remove_unused_columns=True, label_names=None, load_best_model_at_end=True, metric_for_best_model='stsb_spearman', greater_is_better=True, ignore_data_skip=False, sharded_ddp=False, deepspeed=None, label_smoothing_factor=0.0, adafactor=False, eval_transfer=False)
+02/28/2025 13:49:19 - WARNING - __main__ -   Process rank: 2, device: cuda:2, n_gpu: 1 distributed training: True, 16-bits training: True
+02/28/2025 13:49:19 - INFO - __main__ -   Training/evaluation parameters OurTrainingArguments(output_dir='../result/02_27/', overwrite_output_dir=True, do_train=True, do_eval=True, do_predict=False, evaluation_strategy=<EvaluationStrategy.STEPS: 'steps'>, prediction_loss_only=False, per_device_train_batch_size=128, per_device_eval_batch_size=8, per_gpu_train_batch_size=None, per_gpu_eval_batch_size=None, gradient_accumulation_steps=1, eval_accumulation_steps=None, learning_rate=1e-05, weight_decay=0.0, adam_beta1=0.9, adam_beta2=0.999, adam_epsilon=1e-08, max_grad_norm=1.0, num_train_epochs=3.0, max_steps=-1, lr_scheduler_type=<SchedulerType.LINEAR: 'linear'>, warmup_steps=0, logging_dir='runs/Feb28_13-49-19_compsci-cluster-fitz-07', logging_first_step=False, logging_steps=500, save_steps=500, save_total_limit=None, no_cuda=False, seed=42, fp16=True, fp16_opt_level='O1', fp16_backend='auto', local_rank=2, tpu_num_cores=None, tpu_metrics_debug=False, debug=False, dataloader_drop_last=False, eval_steps=125, dataloader_num_workers=0, past_index=-1, run_name='../result/02_27/', disable_tqdm=False, remove_unused_columns=True, label_names=None, load_best_model_at_end=True, metric_for_best_model='stsb_spearman', greater_is_better=True, ignore_data_skip=False, sharded_ddp=False, deepspeed=None, label_smoothing_factor=0.0, adafactor=False, eval_transfer=False)
+02/28/2025 13:49:19 - WARNING - __main__ -   Process rank: 3, device: cuda:3, n_gpu: 1 distributed training: True, 16-bits training: True
+02/28/2025 13:49:19 - INFO - __main__ -   Training/evaluation parameters OurTrainingArguments(output_dir='../result/02_27/', overwrite_output_dir=True, do_train=True, do_eval=True, do_predict=False, evaluation_strategy=<EvaluationStrategy.STEPS: 'steps'>, prediction_loss_only=False, per_device_train_batch_size=128, per_device_eval_batch_size=8, per_gpu_train_batch_size=None, per_gpu_eval_batch_size=None, gradient_accumulation_steps=1, eval_accumulation_steps=None, learning_rate=1e-05, weight_decay=0.0, adam_beta1=0.9, adam_beta2=0.999, adam_epsilon=1e-08, max_grad_norm=1.0, num_train_epochs=3.0, max_steps=-1, lr_scheduler_type=<SchedulerType.LINEAR: 'linear'>, warmup_steps=0, logging_dir='runs/Feb28_13-49-19_compsci-cluster-fitz-07', logging_first_step=False, logging_steps=500, save_steps=500, save_total_limit=None, no_cuda=False, seed=42, fp16=True, fp16_opt_level='O1', fp16_backend='auto', local_rank=3, tpu_num_cores=None, tpu_metrics_debug=False, debug=False, dataloader_drop_last=False, eval_steps=125, dataloader_num_workers=0, past_index=-1, run_name='../result/02_27/', disable_tqdm=False, remove_unused_columns=True, label_names=None, load_best_model_at_end=True, metric_for_best_model='stsb_spearman', greater_is_better=True, ignore_data_skip=False, sharded_ddp=False, deepspeed=None, label_smoothing_factor=0.0, adafactor=False, eval_transfer=False)
+[INFO|configuration_utils.py:445] 2025-02-28 13:49:23,373 >> loading configuration file https://huggingface.co/roberta-large/resolve/main/config.json from cache at /home/users/yd211/.cache/huggingface/transformers/dea67b44b38d504f2523f3ddb6acb601b23d67bee52c942da336fa1283100990.94cae8b3a8dbab1d59b9d4827f7ce79e73124efa6bb970412cd503383a95f373
+[INFO|configuration_utils.py:481] 2025-02-28 13:49:23,375 >> Model config RobertaConfig {
+  "architectures": [
+    "RobertaForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "bos_token_id": 0,
+  "eos_token_id": 2,
+  "gradient_checkpointing": false,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 1024,
+  "initializer_range": 0.02,
+  "intermediate_size": 4096,
+  "layer_norm_eps": 1e-05,
+  "max_position_embeddings": 514,
+  "model_type": "roberta",
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "pad_token_id": 1,
+  "position_embedding_type": "absolute",
+  "transformers_version": "4.2.1",
+  "type_vocab_size": 1,
+  "use_cache": true,
+  "vocab_size": 50265
+}
+
+[INFO|configuration_utils.py:445] 2025-02-28 13:49:23,471 >> loading configuration file https://huggingface.co/roberta-large/resolve/main/config.json from cache at /home/users/yd211/.cache/huggingface/transformers/dea67b44b38d504f2523f3ddb6acb601b23d67bee52c942da336fa1283100990.94cae8b3a8dbab1d59b9d4827f7ce79e73124efa6bb970412cd503383a95f373
+[INFO|configuration_utils.py:481] 2025-02-28 13:49:23,473 >> Model config RobertaConfig {
+  "architectures": [
+    "RobertaForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "bos_token_id": 0,
+  "eos_token_id": 2,
+  "gradient_checkpointing": false,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 1024,
+  "initializer_range": 0.02,
+  "intermediate_size": 4096,
+  "layer_norm_eps": 1e-05,
+  "max_position_embeddings": 514,
+  "model_type": "roberta",
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "pad_token_id": 1,
+  "position_embedding_type": "absolute",
+  "transformers_version": "4.2.1",
+  "type_vocab_size": 1,
+  "use_cache": true,
+  "vocab_size": 50265
+}
+
+[INFO|tokenization_utils_base.py:1766] 2025-02-28 13:49:23,806 >> loading file https://huggingface.co/roberta-large/resolve/main/vocab.json from cache at /home/users/yd211/.cache/huggingface/transformers/7c1ba2435b05451bc3b4da073c8dec9630b22024a65f6c41053caccf2880eb8f.d67d6b367eb24ab43b08ad55e014cf254076934f71d832bbab9ad35644a375ab
+[INFO|tokenization_utils_base.py:1766] 2025-02-28 13:49:23,806 >> loading file https://huggingface.co/roberta-large/resolve/main/merges.txt from cache at /home/users/yd211/.cache/huggingface/transformers/20b5a00a80e27ae9accbe25672aba42ad2d4d4cb2c4b9359b50ca8e34e107d6d.5d12962c5ee615a4c803841266e9c3be9a691a924f72d395d3a6c6c81157788b
+[INFO|tokenization_utils_base.py:1766] 2025-02-28 13:49:23,806 >> loading file https://huggingface.co/roberta-large/resolve/main/tokenizer.json from cache at /home/users/yd211/.cache/huggingface/transformers/e16a2590deb9e6d73711d6e05bf27d832fa8c1162d807222e043ca650a556964.fc9576039592f026ad76a1c231b89aee8668488c671dfbe6616bab2ed298d730
+[INFO|modeling_utils.py:1027] 2025-02-28 13:49:24,051 >> loading weights file https://huggingface.co/roberta-large/resolve/main/pytorch_model.bin from cache at /home/users/yd211/.cache/huggingface/transformers/8e36ec2f5052bec1e79e139b84c2c3089cb647694ba0f4f634fec7b8258f7c89.c43841d8c5cd23c435408295164cda9525270aa42cd0cc9200911570c0342352
+Some weights of the model checkpoint at roberta-large were not used when initializing RobertaForCL: ['lm_head.bias', 'lm_head.dense.weight', 'lm_head.dense.bias', 'lm_head.layer_norm.weight', 'lm_head.layer_norm.bias', 'lm_head.decoder.weight', 'roberta.pooler.dense.weight', 'roberta.pooler.dense.bias']
+- This IS expected if you are initializing RobertaForCL from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing RobertaForCL from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of RobertaForCL were not initialized from the model checkpoint at roberta-large and are newly initialized: ['mlp.dense.weight', 'mlp.dense.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of the model checkpoint at roberta-large were not used when initializing RobertaForCL: ['lm_head.bias', 'lm_head.dense.weight', 'lm_head.dense.bias', 'lm_head.layer_norm.weight', 'lm_head.layer_norm.bias', 'lm_head.decoder.weight', 'roberta.pooler.dense.weight', 'roberta.pooler.dense.bias']
+- This IS expected if you are initializing RobertaForCL from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing RobertaForCL from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of RobertaForCL were not initialized from the model checkpoint at roberta-large and are newly initialized: ['mlp.dense.weight', 'mlp.dense.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+[WARNING|modeling_utils.py:1134] 2025-02-28 13:51:47,799 >> Some weights of the model checkpoint at roberta-large were not used when initializing RobertaForCL: ['lm_head.bias', 'lm_head.dense.weight', 'lm_head.dense.bias', 'lm_head.layer_norm.weight', 'lm_head.layer_norm.bias', 'lm_head.decoder.weight', 'roberta.pooler.dense.weight', 'roberta.pooler.dense.bias']
+- This IS expected if you are initializing RobertaForCL from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing RobertaForCL from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at roberta-large were not used when initializing RobertaForCL: ['lm_head.bias', 'lm_head.dense.weight', 'lm_head.dense.bias', 'lm_head.layer_norm.weight', 'lm_head.layer_norm.bias', 'lm_head.decoder.weight', 'roberta.pooler.dense.weight', 'roberta.pooler.dense.bias']
+- This IS expected if you are initializing RobertaForCL from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing RobertaForCL from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of RobertaForCL were not initialized from the model checkpoint at roberta-large and are newly initialized: ['mlp.dense.weight', 'mlp.dense.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+[WARNING|modeling_utils.py:1145] 2025-02-28 13:51:47,808 >> Some weights of RobertaForCL were not initialized from the model checkpoint at roberta-large and are newly initialized: ['mlp.dense.weight', 'mlp.dense.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+W&B installed but not logged in. Run `wandb login` or set the WANDB_API_KEY env variable.
+W&B installed but not logged in. Run `wandb login` or set the WANDB_API_KEY env variable.
+[WARNING|integrations.py:491] 2025-02-28 13:52:05,181 >> W&B installed but not logged in. Run `wandb login` or set the WANDB_API_KEY env variable.
+W&B installed but not logged in. Run `wandb login` or set the WANDB_API_KEY env variable.
+[INFO|trainer.py:441] 2025-02-28 13:52:05,184 >> The following columns in the training set don't have a corresponding argument in `RobertaForCL.forward` and have been ignored: .
+[INFO|trainer.py:358] 2025-02-28 13:52:05,185 >> Using amp fp16 backend
+02/28/2025 13:52:05 - INFO - simcse.trainers -   ***** Running training *****
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Num examples = 275601
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Num Epochs = 3
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Instantaneous batch size per device = 128
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Total train batch size (w. parallel, distributed & accumulation) = 512
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Gradient Accumulation steps = 1
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Total optimization steps = 1617
+02/28/2025 13:52:05 - INFO - simcse.trainers -   ***** Running training *****
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Num examples = 275601
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Num Epochs = 3
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Instantaneous batch size per device = 128
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Total train batch size (w. parallel, distributed & accumulation) = 512
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Gradient Accumulation steps = 1
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Total optimization steps = 1617
+02/28/2025 13:52:05 - INFO - simcse.trainers -   ***** Running training *****
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Num examples = 275601
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Num Epochs = 3
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Instantaneous batch size per device = 128
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Total train batch size (w. parallel, distributed & accumulation) = 512
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Gradient Accumulation steps = 1
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Total optimization steps = 1617
+02/28/2025 13:52:05 - INFO - simcse.trainers -   ***** Running training *****
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Num examples = 275601
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Num Epochs = 3
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Instantaneous batch size per device = 128
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Total train batch size (w. parallel, distributed & accumulation) = 512
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Gradient Accumulation steps = 1
+02/28/2025 13:52:05 - INFO - simcse.trainers -     Total optimization steps = 1617
+  0%|          | 0/1617 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/train.py", line 604, in <module>
+    main()
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/train.py", line 568, in main
+    train_result = trainer.train(model_path=model_path)
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/trainers.py", line 466, in train
+    tr_loss += self.training_step(model, inputs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/transformers/trainer.py", line 1248, in training_step
+    loss = self.compute_loss(model, inputs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/transformers/trainer.py", line 1277, in compute_loss
+    outputs = model(**inputs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1190, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/parallel/distributed.py", line 1040, in forward
+    output = self._run_ddp_forward(*inputs, **kwargs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/parallel/distributed.py", line 1000, in _run_ddp_forward
+    return module_to_run(*inputs[0], **kwargs[0])
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1190, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/models.py", line 459, in forward
+    return cl_forward(self, self.roberta,
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/models.py", line 291, in cl_forward
+    ortho_penalty = compute_orthogonality_loss(all_z, margin=ortho_margin, num_sent=num_sent)
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/models.py", line 121, in compute_orthogonality_loss
+    cos_sims = F.cosine_similarity(
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 9.00 GiB (GPU 0; 47.53 GiB total capacity; 38.18 GiB already allocated; 8.47 GiB free; 38.35 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+Traceback (most recent call last):
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/train.py", line 604, in <module>
+    main()
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/train.py", line 568, in main
+    train_result = trainer.train(model_path=model_path)
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/trainers.py", line 466, in train
+    tr_loss += self.training_step(model, inputs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/transformers/trainer.py", line 1248, in training_step
+    loss = self.compute_loss(model, inputs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/transformers/trainer.py", line 1277, in compute_loss
+    outputs = model(**inputs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1190, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/parallel/distributed.py", line 1040, in forward
+    output = self._run_ddp_forward(*inputs, **kwargs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/parallel/distributed.py", line 1000, in _run_ddp_forward
+    return module_to_run(*inputs[0], **kwargs[0])
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1190, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/models.py", line 459, in forward
+    return cl_forward(self, self.roberta,
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/models.py", line 291, in cl_forward
+    ortho_penalty = compute_orthogonality_loss(all_z, margin=ortho_margin, num_sent=num_sent)
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/models.py", line 121, in compute_orthogonality_loss
+    cos_sims = F.cosine_similarity(
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 9.00 GiB (GPU 1; 47.53 GiB total capacity; 38.18 GiB already allocated; 8.47 GiB free; 38.35 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+Traceback (most recent call last):
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/train.py", line 604, in <module>
+    main()
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/train.py", line 568, in main
+    train_result = trainer.train(model_path=model_path)
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/trainers.py", line 466, in train
+    tr_loss += self.training_step(model, inputs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/transformers/trainer.py", line 1248, in training_step
+    loss = self.compute_loss(model, inputs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/transformers/trainer.py", line 1277, in compute_loss
+    outputs = model(**inputs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1190, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/parallel/distributed.py", line 1040, in forward
+    output = self._run_ddp_forward(*inputs, **kwargs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/parallel/distributed.py", line 1000, in _run_ddp_forward
+    return module_to_run(*inputs[0], **kwargs[0])
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1190, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/models.py", line 459, in forward
+    return cl_forward(self, self.roberta,
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/models.py", line 291, in cl_forward
+    ortho_penalty = compute_orthogonality_loss(all_z, margin=ortho_margin, num_sent=num_sent)
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/models.py", line 121, in compute_orthogonality_loss
+    cos_sims = F.cosine_similarity(
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 9.00 GiB (GPU 3; 47.53 GiB total capacity; 38.18 GiB already allocated; 8.47 GiB free; 38.35 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+Traceback (most recent call last):
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/train.py", line 604, in <module>
+    main()
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/train.py", line 568, in main
+    train_result = trainer.train(model_path=model_path)
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/trainers.py", line 466, in train
+    tr_loss += self.training_step(model, inputs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/transformers/trainer.py", line 1248, in training_step
+    loss = self.compute_loss(model, inputs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/transformers/trainer.py", line 1277, in compute_loss
+    outputs = model(**inputs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1190, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/parallel/distributed.py", line 1040, in forward
+    output = self._run_ddp_forward(*inputs, **kwargs)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/parallel/distributed.py", line 1000, in _run_ddp_forward
+    return module_to_run(*inputs[0], **kwargs[0])
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1190, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/models.py", line 459, in forward
+    return cl_forward(self, self.roberta,
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/models.py", line 291, in cl_forward
+    ortho_penalty = compute_orthogonality_loss(all_z, margin=ortho_margin, num_sent=num_sent)
+  File "/usr/project/xtmp/yd211/Documents/New_Code/SumCSE/simcse/models.py", line 121, in compute_orthogonality_loss
+    cos_sims = F.cosine_similarity(
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 9.00 GiB (GPU 2; 47.53 GiB total capacity; 38.18 GiB already allocated; 8.47 GiB free; 38.35 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+  0%|          | 0/1617 [00:06<?, ?it/s]
+ERROR:torch.distributed.elastic.multiprocessing.api:failed (exitcode: 1) local_rank: 0 (pid: 88839) of binary: /home/users/yd211/anaconda3/envs/syncse/bin/python
+Traceback (most recent call last):
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/distributed/launch.py", line 195, in <module>
+    main()
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/distributed/launch.py", line 191, in main
+    launch(args)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/distributed/launch.py", line 176, in launch
+    run(args)
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/distributed/run.py", line 753, in run
+    elastic_launch(
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/distributed/launcher/api.py", line 132, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/users/yd211/anaconda3/envs/syncse/lib/python3.9/site-packages/torch/distributed/launcher/api.py", line 246, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+train.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2025-02-28_13:52:17
+  host      : compsci-cluster-fitz-07.cs.duke.edu.
+  rank      : 1 (local_rank: 1)
+  exitcode  : 1 (pid: 88840)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[2]:
+  time      : 2025-02-28_13:52:17
+  host      : compsci-cluster-fitz-07.cs.duke.edu.
+  rank      : 2 (local_rank: 2)
+  exitcode  : 1 (pid: 88841)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[3]:
+  time      : 2025-02-28_13:52:17
+  host      : compsci-cluster-fitz-07.cs.duke.edu.
+  rank      : 3 (local_rank: 3)
+  exitcode  : 1 (pid: 88842)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-02-28_13:52:17
+  host      : compsci-cluster-fitz-07.cs.duke.edu.
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 88839)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+slurmstepd: error: *** JOB 8188849 ON compsci-cluster-fitz-07 CANCELLED AT 2025-02-28T13:52:37 ***
