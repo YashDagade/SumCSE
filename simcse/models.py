@@ -96,6 +96,64 @@ def cl_init(cls, config):
     cls.sim = Similarity(temp=cls.model_args.temp)
     cls.init_weights()
 
+def compute_orthogonality_loss(embeddings: torch.Tensor,
+                               margin: float,
+                               num_sent: int) -> torch.Tensor:
+    """
+    Compute a batch-wise orthogonality penalty while skipping pairs that 
+    belong to the same instance.
+
+    L_ortho = average( ReLU(|cos(e_i, e_j)| - margin) ), for i != j 
+              AND (i,j) not in the same instance.
+
+    Args:
+      embeddings: (N, D)  [N = b * num_sent]
+      margin: threshold
+      num_sent: number of sentences per instance (2 or 3)
+
+    Returns:
+      A scalar orthogonality loss
+    """
+    device = embeddings.device
+    N = embeddings.size(0)
+
+    # Cosine similarity matrix: shape (N, N)
+    cos_sims = F.cosine_similarity(
+        embeddings.unsqueeze(1),
+        embeddings.unsqueeze(0),
+        dim=2
+    )
+    abs_cos_sims = cos_sims.abs()
+
+    # Mask out diagonal (i == j)
+    diag_mask = torch.eye(N, device=device).bool()
+    abs_cos_sims.masked_fill_(diag_mask, 0.0)
+
+    # Mask out pairs from the same instance: i//num_sent == j//num_sent
+    row_idx = torch.arange(N, device=device)
+    col_idx = torch.arange(N, device=device)
+    same_instance_mask = (row_idx.unsqueeze(1) // num_sent) == (
+        col_idx.unsqueeze(0) // num_sent
+    )
+    
+    abs_cos_sims.masked_fill_(same_instance_mask, 0.0)
+
+    # ReLU penalty
+    penalty = F.relu(abs_cos_sims - margin)
+
+    # Count valid pairs
+    total_pairs = N * (N - 1)  # exclude diagonal
+    # number of pairs in each instance: num_sent * (num_sent - 1)
+    # for b instances => b * num_sent*(num_sent-1)
+    # but we don't know b directly, so b = N//num_sent
+    b = N // num_sent
+    same_inst_pairs = b * num_sent * (num_sent - 1)
+    valid_pairs = total_pairs - same_inst_pairs
+
+    L_ortho = penalty.sum() / valid_pairs
+    
+    return L_ortho
+
 def cl_forward(cls,
     encoder,
     input_ids=None,
@@ -213,7 +271,28 @@ def cl_forward(cls,
         ).to(cls.device)
         cos_sim = cos_sim + weights
 
-    loss = loss_fct(cos_sim, labels)
+    ce_loss = loss_fct(cos_sim, labels)
+    
+    # Total loss
+    loss = ce_loss
+    
+    # Add orthogonality loss if enabled
+    if hasattr(cls.model_args, 'ortho_loss_percent') and cls.model_args.ortho_loss_percent > 0.0:
+        # Prepare embeddings for orthogonality calculation
+        if num_sent == 2:
+            all_z = torch.cat([z1, z2], dim=0)
+        elif num_sent == 3:
+            all_z = torch.cat([z1, z2, z3], dim=0)
+        else:
+            all_z = pooler_output.view(-1, pooler_output.size(-1))
+            
+        # Compute orthogonality loss
+        ortho_margin = cls.model_args.ortho_margin if hasattr(cls.model_args, 'ortho_margin') else 0.0
+        ortho_penalty = compute_orthogonality_loss(all_z, margin=ortho_margin, num_sent=num_sent)
+        
+        # Scale by CE loss
+        ce_val = ce_loss.detach()  # detach to prevent gradients through weighting
+        loss = ce_loss + (cls.model_args.ortho_loss_percent * ce_val * ortho_penalty)
 
     # Calculate loss for MLM
     if mlm_outputs is not None and mlm_labels is not None:

@@ -123,6 +123,20 @@ class ModelArguments:
             "help": "Use MLP only during training"
         }
     )
+    
+    # Orthogonality arguments
+    ortho_loss_percent: float = field(
+        default=0.0,
+        metadata={
+            "help": "Fraction of cross-entropy loss used for orthogonality penalty (0.1 => 10%)."
+        }
+    )
+    ortho_margin: float = field(
+        default=0.0,
+        metadata={
+            "help": "Margin threshold for orthogonality. Must be in (0,1)."
+        }
+    )
 
 
 @dataclass
