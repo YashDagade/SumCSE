@@ -1,0 +1,24 @@
+# Ignore embedded git repository
+SumCSE/.git/
+
+# Common ignored files
+*.log
+__pycache__/
+*.py[cod]
+*$py.class
+.DS_Store 
+
+# Large data files and directories
+*.tar
+*.tar.gz
+*.zip
+*.rar
+SentEval/data/downstream/senteval.tar
+SentEval/data/downstream/*/
+trainlogs/
+
+# Training data
+Data/
+DATA/
+temp_senteval/
+result/ 
